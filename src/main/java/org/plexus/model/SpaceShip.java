@@ -16,19 +16,18 @@ import java.util.Date;
 @Table(name = "SPACESHIPS")
 public class SpaceShip {
 
-    //@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer internalId;
     @NonNull
     @Id
     private Integer id;
+    //@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer internalId;
     @NonNull
     private String name;
     @NonNull
     private Timestamp createdDate;
     @NonNull
     private SEEN seen;
-    @CreatedDate
-    @Column(name = "created")
-    private Date created;
+    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    private Date createdAt;
 }

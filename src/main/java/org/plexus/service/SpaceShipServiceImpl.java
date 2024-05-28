@@ -7,6 +7,10 @@ import org.plexus.error.ResourceNotFoundException;
 import org.plexus.model.enums.SpaceShip;
 import org.plexus.repository.SpaceShipRepository;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -72,5 +76,16 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     public List<SpaceShipDTO> searchByNameContaining(String name) {
         return  spaceShipRepository.findByNameContaining(name).stream().map(shapeShip -> modelMapper.map(shapeShip,SpaceShipDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Page<SpaceShipDTO> getAllSpaceShips(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<SpaceShip> spaceShipPage = spaceShipRepository.findAll(pageable);
+        List<SpaceShipDTO> spaceShipDTOs = spaceShipRepository.findAll(PageRequest.of(page, size)).getContent().stream()
+                .map(shapeShip -> modelMapper.map(shapeShip,SpaceShipDTO.class))
+                .collect(Collectors.toList());
+        return new PageImpl<>(spaceShipDTOs, pageable, spaceShipPage.getTotalElements());
+
     }
 }

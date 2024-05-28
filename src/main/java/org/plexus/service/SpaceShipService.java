@@ -1,6 +1,7 @@
 package org.plexus.service;
 
 import org.plexus.dto.SpaceShipDTO;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface SpaceShipService {
 
 
     List<SpaceShipDTO> searchByNameContaining(String name);
+
+    Page<SpaceShipDTO> getAllSpaceShips(int page, int size);
 }

@@ -4,11 +4,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.plexus.dto.SpaceShipDTO;
 import org.plexus.service.SpaceShipService;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -46,6 +45,13 @@ public class SpaceShipController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Integer> deleteSpaceShip(@PathVariable Integer id) {
 		return ResponseEntity.ok(spaceShipService.delete(id));
+	}
+
+	@GetMapping("/")
+	public Page<SpaceShipDTO> getAllSpaceShips(
+			@RequestParam int page,
+			@RequestParam int size) {
+		return spaceShipService.getAllSpaceShips(page, size);
 	}
 
 }
