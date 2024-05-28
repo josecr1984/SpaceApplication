@@ -1,9 +1,8 @@
-package org.plexus.model.enums;
+package org.plexus.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.PositiveOrZero;
 import lombok.*;
-import org.springframework.data.annotation.CreatedDate;
+import org.plexus.model.enums.SEEN;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -28,6 +27,6 @@ public class SpaceShip {
     private Timestamp createdDate;
     @NonNull
     private SEEN seen;
-    @Column(name = "created_at", nullable = false, updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+    @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private Date createdAt;
 }
