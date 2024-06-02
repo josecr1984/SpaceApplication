@@ -15,18 +15,24 @@ import java.util.Date;
 @Table(name = "SPACESHIPS")
 public class SpaceShip {
 
-    @NonNull
     @Id
+    @GeneratedValue(strategy = GenerationType.TABLE, generator = "space_gen")
+    @TableGenerator(
+            name = "space_gen",
+            table = "hibernate_sequences",
+            pkColumnName = "space_gen_seq",
+            valueColumnName = "next_val",
+            pkColumnValue = "default",
+            initialValue = 1000,
+            allocationSize = 1
+    )
     private Integer id;
-    //@Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer internalId;
     @NonNull
     private String name;
     @NonNull
-    private Timestamp createdDate;
+    private Date released;
     @NonNull
     private SEEN seen;
     @Column(name = "created_at", updatable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private Date createdAt;
+    private Timestamp createdAt;
 }

@@ -2,19 +2,19 @@ package org.plexus.service;
 
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.plexus.dto.InputSpaceShipDTO;
 import org.plexus.dto.SpaceShipDTO;
 import org.plexus.error.ResourceNotFoundException;
-import org.plexus.model.enums.SpaceShip;
+import org.plexus.model.SpaceShip;
 import org.plexus.repository.SpaceShipRepository;
-import org.springframework.cache.annotation.Caching;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,11 +46,12 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     @Override
     @CachePut(value = "spaceships", key = "#id")
     @CacheEvict(value = "spaceships", key = "'all'")
-    public SpaceShipDTO update(Integer id, SpaceShipDTO updateShapeShipDTO) {
-        spaceShipRepository.findById(id)
+    public SpaceShipDTO update(Integer id, InputSpaceShipDTO inputSpaceShipDTO) {
+        SpaceShip spaceShip = spaceShipRepository.findById(id)
                .orElseThrow(() -> new ResourceNotFoundException("Can not be found SpaceShip with id :" + id));
-        updateShapeShipDTO.setId(id);
-        SpaceShip spaceShip = modelMapper.map(updateShapeShipDTO,SpaceShip.class);
+        spaceShip.setName(inputSpaceShipDTO.getName());
+        spaceShip.setSeen(inputSpaceShipDTO.getSeen());
+        spaceShip.setReleased(inputSpaceShipDTO.getReleased());
         return modelMapper.map(spaceShipRepository.save(spaceShip),SpaceShipDTO.class);
     }
 
@@ -64,11 +65,10 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     }
 
     @Override
-
     @CachePut(value = "spaceships", key = "#result.id")
     @CacheEvict(value = "spaceships", key = "'all'")
-    public SpaceShipDTO create(SpaceShipDTO spaceShipDTO) {
-        SpaceShip spaceShip = modelMapper.map(spaceShipDTO, SpaceShip.class);
+    public SpaceShipDTO create(InputSpaceShipDTO inputSpaceShipDTO) {
+        SpaceShip spaceShip = modelMapper.map(inputSpaceShipDTO, SpaceShip.class);
         return modelMapper.map(spaceShipRepository.save(spaceShip),SpaceShipDTO.class);
     }
 

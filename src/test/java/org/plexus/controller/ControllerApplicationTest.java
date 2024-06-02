@@ -5,23 +5,20 @@ package org.plexus.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.Before;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.plexus.Main;
+import org.plexus.dto.InputSpaceShipDTO;
 import org.plexus.dto.SpaceShipDTO;
 import org.plexus.model.enums.SEEN;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.sql.Timestamp;
-import java.time.Instant;
-import java.util.Calendar;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -32,16 +29,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 //@WebMvcTest(controllers = SpaceShipController.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK,classes = Main.class)
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class ControllerApplicationTest {
+
 
     @Autowired
     MockMvc mockMvc;
-    private final static String SPACESHIP_URL = "/spaceShips";
-    private final static String SEARCH_URL = SPACESHIP_URL+"/searchByNameContaining/";
+    private final static String SPACESHIP_URL = "/space-ship";
+    private final static String SEARCH_URL = SPACESHIP_URL+"/searchByNameContaining";
 
 
 
-    public String getStringFromSpaceShip(SpaceShipDTO spaceShip) throws JsonProcessingException {
+    /*public String getStringFromSpaceShip(SpaceShipDTO spaceShip) throws JsonProcessingException {
+        return new ObjectMapper().writeValueAsString(spaceShip);
+    }*/
+
+    public String getStringFromSpaceShip(InputSpaceShipDTO spaceShip) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(spaceShip);
     }
 
@@ -57,11 +60,10 @@ public class ControllerApplicationTest {
 
     @Test
     public void test_insert_should_be_OK() throws Exception {
-        SpaceShipDTO space = new SpaceShipDTO();
+        InputSpaceShipDTO space = new InputSpaceShipDTO();
         space.setName("Test Integration");
-        space.setId(1);
+        space.setReleased(Timestamp.valueOf("2022-01-01 00:00:00"));
         space.setSeen(SEEN.FILM);
-        space.setCreatedDate(Timestamp.from(Instant.now()));
         String spaceShiptResponse = mockMvc.perform(
                 post(SPACESHIP_URL).
                         contentType(MediaType.APPLICATION_JSON).content(getStringFromSpaceShip(space))
@@ -75,10 +77,9 @@ public class ControllerApplicationTest {
 
     @Test
     public void testSearchContainsNotFound() throws Exception {
-        String name = "Millennial";
+        String name = "Mil-";
         String spaceShiptResponse = mockMvc.perform(
-                get(SEARCH_URL + name).
-                        contentType(MediaType.APPLICATION_JSON)
+                get(SEARCH_URL).param("name",name)
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         List<SpaceShipDTO> spaceResult = getSpaceShipListFromString(spaceShiptResponse);
         Assertions.assertEquals(spaceResult.size(),0);
@@ -88,8 +89,7 @@ public class ControllerApplicationTest {
     public void testSearchContainsPartOfName() throws Exception {
         String name = "Mill";
         String spaceShiptResponse = mockMvc.perform(
-                get(SEARCH_URL + name).
-                        contentType(MediaType.APPLICATION_JSON)
+                get(SEARCH_URL).param("name",name)
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         List<SpaceShipDTO> spaceResult = getSpaceShipListFromString(spaceShiptResponse);
         Assertions.assertEquals(spaceResult.size(),1);
@@ -98,10 +98,17 @@ public class ControllerApplicationTest {
 
     @Test
     public void testDelete() throws Exception {
+        int spaceShipId = 1;
         String spaceShiptResponse = mockMvc.perform(
-                delete(SPACESHIP_URL + "/3").
+                delete(SPACESHIP_URL + "/"+spaceShipId).
                         contentType(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+
+        spaceShiptResponse  = mockMvc.perform(
+                get(SPACESHIP_URL + "/"+spaceShipId).
+                        contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNotFound()).andReturn().getResponse().getContentAsString();
+
     }
 
 }

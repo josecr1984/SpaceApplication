@@ -2,6 +2,7 @@ package org.plexus.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.plexus.dto.InputSpaceShipDTO;
 import org.plexus.dto.SpaceShipDTO;
 import org.plexus.service.SpaceShipService;
 import org.springframework.data.domain.Page;
@@ -12,34 +13,25 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/spaceShips")
+@RequestMapping("/space-ship")
 public class SpaceShipController {
 
 	private final SpaceShipService spaceShipService;
 
-	@GetMapping
-	public ResponseEntity<List<SpaceShipDTO>> getAll() {
-		return ResponseEntity.ok(spaceShipService.getAll());
-	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<SpaceShipDTO> get(@PathVariable Integer id) {
 		return ResponseEntity.ok(spaceShipService.get(id));
 	}
 
-	@GetMapping("/searchByNameContaining/{name}")
-	public ResponseEntity<List<SpaceShipDTO>> searchByNameContaining(@PathVariable String name) {
-		return ResponseEntity.ok(spaceShipService.searchByNameContaining(name));
-	}
-
 	@PostMapping
-	public ResponseEntity<SpaceShipDTO> createSpaceShip(@RequestBody @Valid SpaceShipDTO spaceShipDTO) {
-		return ResponseEntity.ok(spaceShipService.create(spaceShipDTO));
+	public ResponseEntity<SpaceShipDTO> createSpaceShip(@RequestBody @Valid InputSpaceShipDTO inputSpaceShipDTO) {
+		return ResponseEntity.ok(spaceShipService.create(inputSpaceShipDTO));
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<SpaceShipDTO> updateSpaceShip(@PathVariable Integer id, @RequestBody @Valid SpaceShipDTO updateShapeShipDTO) {
-		return ResponseEntity.ok(spaceShipService.update(id,updateShapeShipDTO));
+	public ResponseEntity<SpaceShipDTO> updateSpaceShip(@PathVariable Integer id, @RequestBody InputSpaceShipDTO inputSpaceShipDTO) {
+		return ResponseEntity.ok(spaceShipService.update(id,inputSpaceShipDTO));
 	}
 
 	@DeleteMapping("/{id}")
@@ -52,6 +44,17 @@ public class SpaceShipController {
 			@RequestParam int page,
 			@RequestParam int size) {
 		return spaceShipService.getAllSpaceShips(page, size);
+	}
+
+	@GetMapping
+	public ResponseEntity<List<SpaceShipDTO>> getAll() {
+		return ResponseEntity.ok(spaceShipService.getAll());
+	}
+
+
+	@GetMapping("/searchByNameContaining")
+	public ResponseEntity<List<SpaceShipDTO>> searchByNameContaining(@RequestParam String name) {
+		return ResponseEntity.ok(spaceShipService.searchByNameContaining(name));
 	}
 
 }
