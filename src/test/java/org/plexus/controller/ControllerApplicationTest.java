@@ -59,7 +59,7 @@ public class ControllerApplicationTest {
 
 
     @Test
-    public void test_insert_should_be_OK() throws Exception {
+    public void testInsert() throws Exception {
         InputSpaceShipDTO space = new InputSpaceShipDTO();
         space.setName("Test Integration");
         space.setReleased(Timestamp.valueOf("2022-01-01 00:00:00"));
