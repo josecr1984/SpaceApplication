@@ -59,7 +59,7 @@ public class ControllerApplicationTest {
 
 
     @Test
-    public void testInsert() throws Exception {
+    void testInsert() throws Exception {
         InputSpaceShipDTO space = new InputSpaceShipDTO();
         space.setName("Test Integration");
         space.setReleased(Timestamp.valueOf("2022-01-01 00:00:00"));
@@ -76,7 +76,7 @@ public class ControllerApplicationTest {
 
 
     @Test
-    public void testSearchContainsNotFound() throws Exception {
+    void testSearchContainsNotFound() throws Exception {
         String name = "Mil-";
         String spaceShiptResponse = mockMvc.perform(
                 get(SEARCH_URL).param("name",name)
@@ -86,7 +86,7 @@ public class ControllerApplicationTest {
     }
 
     @Test
-    public void testSearchContainsPartOfName() throws Exception {
+    void testSearchContainsPartOfName() throws Exception {
         String name = "Mill";
         String spaceShiptResponse = mockMvc.perform(
                 get(SEARCH_URL).param("name",name)
@@ -97,7 +97,7 @@ public class ControllerApplicationTest {
 
 
     @Test
-    public void testDelete() throws Exception {
+    void testDelete() throws Exception {
         int spaceShipId = 1;
         String spaceShiptResponse = mockMvc.perform(
                 delete(SPACESHIP_URL + "/"+spaceShipId).

@@ -29,7 +29,7 @@ public class SpaceShipRepositoryTest {
     }
 
      @Test
-    public void testInsert() {
+    void testInsert() {
         SpaceShip spaceShip = new SpaceShip();
        // spaceShip.setId(1);
         spaceShip.setName("test space");
@@ -41,7 +41,7 @@ public class SpaceShipRepositoryTest {
      }
 
     @Test
-    public void testDelete() {
+    void testDelete() {
         SpaceShip spaceShip = new SpaceShip();
         spaceShip.setId(1);
         spaceShip.setName("test space");
@@ -53,7 +53,7 @@ public class SpaceShipRepositoryTest {
 
 
     @Test
-    public void testUpdate() {
+    void testUpdate() {
         SpaceShip spaceShip = new SpaceShip();
         spaceShip.setId(1);
         spaceShip.setName("test space");
@@ -70,7 +70,7 @@ public class SpaceShipRepositoryTest {
     }
 
     @Test
-    public void testFindByNameContains() {
+    void testFindByNameContains() {
         int count = 5;
         String nameInsert="Test";
         for (int index= 1; index<=count ;index++)

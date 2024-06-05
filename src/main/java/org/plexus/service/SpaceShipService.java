@@ -8,12 +8,12 @@ import java.util.List;
 
 public interface SpaceShipService {
 
-    public SpaceShipDTO  create(InputSpaceShipDTO inputSpaceShipDTO);
-    public SpaceShipDTO  update(Integer id, InputSpaceShipDTO inputSpaceShipDTO);
-    public Integer  delete(Integer id);
+    SpaceShipDTO  create(InputSpaceShipDTO inputSpaceShipDTO);
+    SpaceShipDTO  update(Integer id, InputSpaceShipDTO inputSpaceShipDTO);
+    Integer  delete(Integer id);
     Page<SpaceShipDTO> getAllSpaceShips(int page, int size);
-    public List<SpaceShipDTO> searchByNameContaining(String name);
-    public List<SpaceShipDTO>  getAll();
-    public SpaceShipDTO  get(Integer id);
+    List<SpaceShipDTO> searchByNameContaining(String name);
+    List<SpaceShipDTO>  getAll();
+    SpaceShipDTO  get(Integer id);
 
 }

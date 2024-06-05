@@ -7,6 +7,7 @@ import org.plexus.dto.SpaceShipDTO;
 import org.plexus.error.ResourceNotFoundException;
 import org.plexus.model.SpaceShip;
 import org.plexus.repository.SpaceShipRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -28,6 +29,10 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     private final SpaceShipRepository spaceShipRepository;
     private final ModelMapper modelMapper;
 
+    @Value("${spaceApplication.cte.message.notfound.value}")
+    private String messageNotFound;
+
+
     @Override
     @Cacheable(value="spaceships")
     public List<SpaceShipDTO> getAll() {
@@ -39,7 +44,7 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     @Cacheable(value = "spaceships", key = "#id")
     public SpaceShipDTO get(Integer id) {
         SpaceShip spaceShip =  spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Can not be found SpaceShip with id :" + id));
+                .orElseThrow(() -> new ResourceNotFoundException(messageNotFound + id));
         return modelMapper.map(spaceShip,SpaceShipDTO.class);
     }
 
@@ -48,7 +53,7 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     @CacheEvict(value = "spaceships", key = "'all'")
     public SpaceShipDTO update(Integer id, InputSpaceShipDTO inputSpaceShipDTO) {
         SpaceShip spaceShip = spaceShipRepository.findById(id)
-               .orElseThrow(() -> new ResourceNotFoundException("Can not be found SpaceShip with id :" + id));
+               .orElseThrow(() -> new ResourceNotFoundException(messageNotFound + id));
         spaceShip.setName(inputSpaceShipDTO.getName());
         spaceShip.setSeen(inputSpaceShipDTO.getSeen());
         spaceShip.setReleased(inputSpaceShipDTO.getReleased());
@@ -59,7 +64,7 @@ public class SpaceShipServiceImpl implements SpaceShipService {
     @CacheEvict(value = "spaceships", allEntries = true)
     public Integer delete(Integer id) {
         SpaceShip spaceShip = spaceShipRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Can not be found SpaceShip with id :" + id));
+                .orElseThrow(() -> new ResourceNotFoundException(messageNotFound + id));
         spaceShipRepository.delete(spaceShip);
         return id;
     }
